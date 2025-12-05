@@ -1,0 +1,100 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #1a1a1a;
+}
+
+.game-container {
+    max-width: 850px;
+    margin: 20px auto;
+    padding: 0;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border-bottom: 3px solid #fff;
+}
+
+.header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.info {
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.2em;
+    font-weight: bold;
+    gap: 20px;
+}
+
+.player-info {
+    color: #ff69b4;
+    text-shadow: 0 0 5px #ff69b4;
+}
+
+.enemy-info {
+    color: #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+}
+
+#gameCanvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    background-color: #000;
+    border: 2px solid #666;
+}
+
+.controls {
+    background-color: #333;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 0.9em;
+    line-height: 1.8;
+}
+
+.controls p {
+    margin: 5px 0;
+}
+
+.status {
+    background-color: #4a4a4a;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status.win {
+    color: #00ff00;
+}
+
+.status.lose {
+    color: #ff0000;
+}
+
+.status.playing {
+    color: #ffff00;
+}

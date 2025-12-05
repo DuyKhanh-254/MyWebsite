@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Tank - Phương Anh vs Duy Khánh</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🎮 GAME TANK</h1>
+            <div class="info">
+                <div class="player-info">
+                    <span>🎖️ Phương Anh (Hồng)</span> | HP: <span id="playerHp">100</span>
+                </div>
+                <div class="enemy-info">
+                    <span>🤖 Duy Khánh (Đen)</span> | HP: <span id="enemyHp">100</span>
+                </div>
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <div class="controls">
+            <p>⬅️ A - Di chuyển trái | ➡️ D - Di chuyển phải | ⬆️ W - Di chuyển lên | ⬇️ S - Di chuyển xuống</p>
+            <p>🔫 SPACE - Bắn | 🎮 Duy Khánh AI sẽ tự động di chuyển và bắn</p>
+        </div>
+        
+        <div class="status" id="status"></div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
