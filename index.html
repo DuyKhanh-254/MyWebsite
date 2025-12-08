@@ -12,12 +12,24 @@
             <h1>🎮 GAME TANK</h1>
             <div class="info">
                 <div class="player-info">
-                    <span>🎖️ Phương Anh (Hồng)</span> | HP: <span id="playerHp">100</span>
+                        <span>🎖️ <span id="playerNameDisplay">Phương Anh</span> (Hồng)</span> | HP: <span id="playerHp">100</span>
                 </div>
                 <div class="enemy-info">
-                    <span>🤖 Duy Khánh (Đen)</span> | HP: <span id="enemyHp">100</span>
+                        <span>🤖 Duy Khánh (Đen)</span> | HP: <span id="enemyHp">100</span>
                 </div>
             </div>
+
+                <!-- Start screen: nhập tên trước khi chơi -->
+                <div id="startScreen" class="start-screen">
+                    <div class="start-box">
+                        <h2>Nhập tên người chơi</h2>
+                        <input id="playerNameInput" type="text" placeholder="Phương Anh" value="Phương Anh" />
+                        <div class="start-actions">
+                            <button id="startButton">Bắt đầu chơi</button>
+                        </div>
+                        <p class="start-hint">Sử dụng W/A/S/D để di chuyển, SPACE để bắn, di chuột để ngắm.</p>
+                    </div>
+                </div>
         </div>
         
         <canvas id="gameCanvas" width="800" height="600"></canvas>

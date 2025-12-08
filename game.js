@@ -2,10 +2,14 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 // Game variables
-let gameRunning = true;
+let gameRunning = false; // start paused until player clicks "Bắt đầu"
 let gameOver = false;
+let gameStarted = false;
 
-// Player (Phương Anh - Hồng)
+// Player name (default)
+let playerName = 'Phương Anh';
+
+// Player (Hồng)
 const player = {
     x: 100,
     y: 500,
@@ -196,12 +200,12 @@ function updateBullets() {
     if (player.hp <= 0) {
         gameRunning = false;
         gameOver = true;
-        document.getElementById('status').textContent = '💥 Bạn đã thua! Duy Khánh chiến thắng!';
+        document.getElementById('status').textContent = `💥 ${playerName} đã bị tiêu diệt! Duy Khánh chiến thắng!`;
         document.getElementById('status').className = 'status lose';
     } else if (enemy.hp <= 0) {
         gameRunning = false;
         gameOver = true;
-        document.getElementById('status').textContent = '🎉 Bạn đã thắng! Phương Anh chiến thắng!';
+        document.getElementById('status').textContent = `🎉 ${playerName} chiến thắng!`;
         document.getElementById('status').className = 'status win';
     } else {
         document.getElementById('status').textContent = '🎮 Đang chơi...';
@@ -262,7 +266,7 @@ function drawHPBars() {
     ctx.strokeRect(10, 10, barWidth, barHeight);
     ctx.fillStyle = '#fff';
     ctx.font = '12px Arial';
-    ctx.fillText('Phương Anh', 115, 18);
+    ctx.fillText(playerName, 115, 18);
     
     // Enemy HP bar
     ctx.fillStyle = '#444';
@@ -308,3 +312,29 @@ document.addEventListener('mousemove', (e) => {
 
 // Start game
 gameLoop();
+
+// Start screen logic: read name and start when button clicked
+const startButton = document.getElementById('startButton');
+const startScreen = document.getElementById('startScreen');
+const nameInput = document.getElementById('playerNameInput');
+const nameDisplay = document.getElementById('playerNameDisplay');
+
+function startGame() {
+    const v = (nameInput && nameInput.value && nameInput.value.trim()) ? nameInput.value.trim() : 'Phương Anh';
+    playerName = v;
+    if (nameDisplay) nameDisplay.textContent = playerName;
+    if (startScreen) startScreen.style.display = 'none';
+    gameRunning = true;
+    gameStarted = true;
+}
+
+if (startButton) {
+    startButton.addEventListener('click', startGame);
+}
+
+// allow Enter to start
+if (nameInput) {
+    nameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') startGame();
+    });
+}
