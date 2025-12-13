@@ -5,6 +5,7 @@ const ctx = canvas.getContext('2d');
 let gameRunning = false; // start paused until player clicks "Bắt đầu"
 let gameOver = false;
 let gameStarted = false;
+let isMobile = false; // Flag for mobile mode
 
 // Player name (default)
 let playerName = 'Mời các bố nhập tên';
@@ -622,14 +623,110 @@ function startGame() {
         console.log('Selected Map:', currentMapId);
     }
 
+    // Read Device
+    const deviceSelect = document.getElementById('deviceSelect');
+    if (deviceSelect) {
+        isMobile = (deviceSelect.value === 'MOBILE');
+        console.log('Is Mobile:', isMobile);
+    }
+    
     if (nameDisplay) nameDisplay.textContent = playerName;
     if (startScreen) startScreen.style.display = 'none';
-
-    // Reset game state based on new settings (Logic to be implemented)
+    
+    // Reset game state based on new settings
     initGame();
-
+    
+    // Setup Controls based on device
+    setupControls();
+    
     gameRunning = true;
     gameStarted = true;
+}
+
+function setupControls() {
+    const mobileDiv = document.getElementById('mobileControls');
+    if (isMobile) {
+        if (mobileDiv) mobileDiv.style.display = 'block';
+        setupMobileEvents();
+    } else {
+        if (mobileDiv) mobileDiv.style.display = 'none';
+    }
+}
+
+function setupMobileEvents() {
+    const stickZone = document.getElementById('joystickZone');
+    const stickKnob = document.getElementById('joystickKnob');
+    const shootBtn = document.getElementById('shootBtn');
+    
+    let stickId = null;
+    
+    const updateJoystick = (clientX, clientY, rect) => {
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        let dx = clientX - centerX;
+        let dy = clientY - centerY;
+        
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const maxDist = 40; 
+        
+        if (dist > maxDist) {
+            const ratio = maxDist / dist;
+            dx *= ratio;
+            dy *= ratio;
+        }
+        
+        stickKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        
+        const threshold = 10;
+        keys['w'] = dy < -threshold;
+        keys['s'] = dy > threshold;
+        keys['a'] = dx < -threshold;
+        keys['d'] = dx > threshold;
+        
+        if (dist > 5) {
+             player.angle = Math.atan2(dy, dx);
+        }
+    };
+    
+    if (stickZone) {
+        stickZone.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.changedTouches[0];
+            stickId = touch.identifier;
+            const rect = stickZone.getBoundingClientRect();
+            updateJoystick(touch.clientX, touch.clientY, rect);
+        }, {passive: false});
+        
+        stickZone.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            for (let i=0; i<e.changedTouches.length; i++) {
+                if (e.changedTouches[i].identifier === stickId) {
+                    const rect = stickZone.getBoundingClientRect();
+                    updateJoystick(e.changedTouches[i].clientX, e.changedTouches[i].clientY, rect);
+                    break;
+                }
+            }
+        }, {passive: false});
+        
+        stickZone.addEventListener('touchend', (e) => {
+             e.preventDefault();
+             stickId = null;
+             stickKnob.style.transform = `translate(-50%, -50%)`;
+             keys['w'] = false; keys['s'] = false;
+             keys['a'] = false; keys['d'] = false;
+        });
+    }
+    
+    if (shootBtn) {
+        shootBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (player.shootCooldown <= 0) {
+                shootPlayer();
+                player.shootCooldown = player.rapidFire ? 5 : 20;
+            }
+        }, {passive: false});
+    }
 }
 
 if (startButton) {
