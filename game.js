@@ -129,7 +129,7 @@ function updatePlayer() {
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
 
-    if (window.mouseX !== undefined && window.mouseY !== undefined) {
+    if (!isMobile && window.mouseX !== undefined && window.mouseY !== undefined) {
         const dx = window.mouseX - (player.x + player.width / 2);
         const dy = window.mouseY - (player.y + player.height / 2);
         player.angle = Math.atan2(dy, dx);
