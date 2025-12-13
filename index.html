@@ -1,47 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Tank - Phương Anh vs Duy Khánh</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="game-container">
         <div class="header">
             <h1>🎮 GAME TANK</h1>
             <div class="info">
                 <div class="player-info">
-                        <span>🎖️ <span id="playerNameDisplay">Phương Anh</span> (Hồng)</span> | HP: <span id="playerHp">100</span>
+                    <span>🎖️ <span id="playerNameDisplay">Phương Anh</span> (Hồng)</span> | HP: <span
+                        id="playerHp">100</span>
                 </div>
                 <div class="enemy-info">
                     <span>🤖 Duy Khánh (Xanh lam)</span> | HP: <span id="enemyHp">100</span>
                 </div>
             </div>
 
-                <!-- Start screen: nhập tên trước khi chơi -->
-                <div id="startScreen" class="start-screen">
-                    <div class="start-box">
-                        <h2>Nhập tên người chơi</h2>
-                        <input id="playerNameInput" type="text" placeholder="Phương Anh" value="Phương Anh" />
-                        <div class="start-actions">
-                            <button id="startButton">Bắt đầu chơi</button>
-                        </div>
-                        <p class="start-hint">Sử dụng W/A/S/D để di chuyển, SPACE để bắn, di chuột để ngắm.</p>
+            <!-- Start screen: nhập tên trước khi chơi -->
+            <div id="startScreen" class="start-screen">
+                <div class="start-box">
+                    <h2>Nhập tên người chơi</h2>
+                    <input id="playerNameInput" type="text" placeholder="Phương Anh" value="Phương Anh" />
+
+                    <div class="form-group">
+                        <label for="difficultySelect">Độ khó:</label>
+                        <select id="difficultySelect">
+                            <option value="EASY">Dễ</option>
+                            <option value="NORMAL" selected>Bình thường</option>
+                            <option value="HARD">Khó</option>
+                        </select>
                     </div>
+
+                    <div class="form-group">
+                        <label for="mapSelect">Bản đồ:</label>
+                        <select id="mapSelect">
+                            <option value="0">Bãi đất trống</option>
+                            <option value="1">Mê cung</option>
+                            <option value="2">Thành phố</option>
+                        </select>
+                    </div>
+
+                    <div class="start-actions">
+                        <button id="startButton">Bắt đầu chơi</button>
+                    </div>
+                    <p class="start-hint">Sử dụng W/A/S/D để di chuyển, SPACE để bắn, di chuột để ngắm.</p>
                 </div>
+            </div>
         </div>
-        
+
         <canvas id="gameCanvas" width="800" height="600"></canvas>
-        
+
         <div class="controls">
             <p>⬅️ A - Di chuyển trái | ➡️ D - Di chuyển phải | ⬆️ W - Di chuyển lên | ⬇️ S - Di chuyển xuống</p>
             <p>🔫 SPACE - Bắn | 🎮 Duy Khánh AI sẽ tự động di chuyển và bắn</p>
         </div>
-        
-        <div class="status" id="status"></div>
+
+        <div class="status-wrapper">
+            <div class="status" id="status"></div>
+            <button id="restartButton" class="restart-btn" style="display: none;">🔄 Chơi lại</button>
+        </div>
     </div>
-    
+
     <script src="game.js"></script>
 </body>
+
 </html>
