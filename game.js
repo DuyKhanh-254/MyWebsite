@@ -628,6 +628,10 @@ function startGame() {
     if (deviceSelect) {
         isMobile = (deviceSelect.value === 'MOBILE');
         console.log('Is Mobile:', isMobile);
+        if (isMobile) {
+            const statusEl = document.getElementById('status');
+            if (statusEl) statusEl.textContent += ' (Chế độ Điện thoại)';
+        }
     }
     
     if (nameDisplay) nameDisplay.textContent = playerName;
