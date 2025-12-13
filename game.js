@@ -647,19 +647,28 @@ function setupControls() {
     const mobileDiv = document.getElementById('mobileControls');
     if (isMobile) {
         if (mobileDiv) mobileDiv.style.display = 'block';
-        setupMobileEvents();
+        // Add a small delay to ensure display:block applies before attaching events?
+        // Not usually needed but safety check.
+        setTimeout(setupMobileEvents, 100);
     } else {
         if (mobileDiv) mobileDiv.style.display = 'none';
+        removeMobileEvents(); // Cleanup if switch device
     }
 }
+
+let activeTouchHandlers = {};
 
 function setupMobileEvents() {
     const stickZone = document.getElementById('joystickZone');
     const stickKnob = document.getElementById('joystickKnob');
-    const shootBtn = document.getElementById('shootBtn');
+    const aimZone = document.getElementById('aimZone');
+    const aimKnob = document.getElementById('aimKnob');
     
+    // Joystick
     let stickId = null;
+    let aimId = null;
     
+    // Joystick Logic
     const updateJoystick = (clientX, clientY, rect) => {
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
@@ -683,22 +692,47 @@ function setupMobileEvents() {
         keys['s'] = dy > threshold;
         keys['a'] = dx < -threshold;
         keys['d'] = dx > threshold;
+    };
+    
+    // Aim Logic
+    const updateAim = (clientX, clientY, rect) => {
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
         
+        let dx = clientX - centerX;
+        let dy = clientY - centerY;
+        
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const maxDist = 30; // Aim joystick range
+        
+        if (dist > maxDist) {
+            const ratio = maxDist / dist;
+            dx *= ratio;
+            dy *= ratio;
+        }
+        
+        aimKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        
+        // Aim and Shoot
         if (dist > 5) {
-             player.angle = Math.atan2(dy, dx);
+            player.angle = Math.atan2(dy, dx);
+            if (player.shootCooldown <= 0) {
+                 shootPlayer();
+                 player.shootCooldown = player.rapidFire ? 5 : 20;
+            }
         }
     };
     
     if (stickZone) {
-        stickZone.addEventListener('touchstart', (e) => {
+        stickZone.ontouchstart = (e) => {
             e.preventDefault();
             const touch = e.changedTouches[0];
             stickId = touch.identifier;
             const rect = stickZone.getBoundingClientRect();
             updateJoystick(touch.clientX, touch.clientY, rect);
-        }, {passive: false});
+        };
         
-        stickZone.addEventListener('touchmove', (e) => {
+        stickZone.ontouchmove = (e) => {
             e.preventDefault();
             for (let i=0; i<e.changedTouches.length; i++) {
                 if (e.changedTouches[i].identifier === stickId) {
@@ -707,25 +741,69 @@ function setupMobileEvents() {
                     break;
                 }
             }
-        }, {passive: false});
+        };
         
-        stickZone.addEventListener('touchend', (e) => {
+        stickZone.ontouchend = (e) => {
              e.preventDefault();
-             stickId = null;
-             stickKnob.style.transform = `translate(-50%, -50%)`;
-             keys['w'] = false; keys['s'] = false;
-             keys['a'] = false; keys['d'] = false;
-        });
+             // Only reset if this touch ended
+             for(let i=0; i<e.changedTouches.length; i++) {
+                 if (e.changedTouches[i].identifier === stickId) {
+                     stickId = null;
+                     stickKnob.style.transform = `translate(-50%, -50%)`;
+                     keys['w'] = false; keys['s'] = false;
+                     keys['a'] = false; keys['d'] = false;
+                     break;
+                 }
+             }
+        };
     }
     
-    if (shootBtn) {
-        shootBtn.addEventListener('touchstart', (e) => {
+    if (aimZone) {
+        aimZone.ontouchstart = (e) => {
             e.preventDefault();
-            if (player.shootCooldown <= 0) {
-                shootPlayer();
-                player.shootCooldown = player.rapidFire ? 5 : 20;
+            const touch = e.changedTouches[0];
+            aimId = touch.identifier;
+            const rect = aimZone.getBoundingClientRect();
+            updateAim(touch.clientX, touch.clientY, rect);
+        };
+        
+        aimZone.ontouchmove = (e) => {
+            e.preventDefault();
+            for (let i=0; i<e.changedTouches.length; i++) {
+                if (e.changedTouches[i].identifier === aimId) {
+                    const rect = aimZone.getBoundingClientRect();
+                    updateAim(e.changedTouches[i].clientX, e.changedTouches[i].clientY, rect);
+                    break;
+                }
             }
-        }, {passive: false});
+        };
+        
+         aimZone.ontouchend = (e) => {
+             e.preventDefault();
+             for(let i=0; i<e.changedTouches.length; i++) {
+                 if (e.changedTouches[i].identifier === aimId) {
+                     aimId = null;
+                     aimKnob.style.transform = `translate(-50%, -50%)`;
+                     break;
+                 }
+             }
+        };
+    }
+}
+
+function removeMobileEvents() {
+    // Optional cleanup
+    const stickZone = document.getElementById('joystickZone');
+    const aimZone = document.getElementById('aimZone');
+    if(stickZone) {
+        stickZone.ontouchstart = null;
+        stickZone.ontouchmove = null;
+        stickZone.ontouchend = null;
+    }
+    if(aimZone) {
+        aimZone.ontouchstart = null;
+        aimZone.ontouchmove = null;
+        aimZone.ontouchend = null;
     }
 }
 
