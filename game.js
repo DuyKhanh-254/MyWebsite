@@ -7,7 +7,7 @@ let gameOver = false;
 let gameStarted = false;
 
 // Player name (default)
-let playerName = 'Phương Anh';
+let playerName = 'Mời các bố nhập tên';
 
 // Player (Hồng)
 const player = {
