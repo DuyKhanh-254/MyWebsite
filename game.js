@@ -605,7 +605,7 @@ const nameInput = document.getElementById('playerNameInput');
 const nameDisplay = document.getElementById('playerNameDisplay');
 
 function startGame() {
-    const v = (nameInput && nameInput.value && nameInput.value.trim()) ? nameInput.value.trim() : 'Phương Anh';
+    const v = (nameInput && nameInput.value && nameInput.value.trim()) ? nameInput.value.trim() : 'Mời các bố nhập tên';
     playerName = v;
 
     // Read Difficulty
