@@ -16,7 +16,7 @@ const player = {
     y: 500,
     width: 40,
     height: 40,
-    speed: 5,
+    speed: 4,
     hp: 100,
     maxHp: 100,
     color: '#ff69b4',
@@ -40,9 +40,9 @@ const enemy = {
 
 // Game Configuration
 const DIFFICULTY = {
-    EASY: { enemySpeed: 2, enemyShootRate: 80, enemyHp: 100 },
-    NORMAL: { enemySpeed: 3, enemyShootRate: 60, enemyHp: 150 },
-    HARD: { enemySpeed: 4.5, enemyShootRate: 30, enemyHp: 300 }
+    EASY: { enemySpeed: 2, enemyShootRate: 80, enemyHp: 100, enemyDamage: 10 },
+    NORMAL: { enemySpeed: 3, enemyShootRate: 60, enemyHp: 150, enemyDamage: 10 },
+    HARD: { enemySpeed: 4.5, enemyShootRate: 30, enemyHp: 300, enemyDamage: 30 }
 };
 
 const MAPS = [
@@ -86,7 +86,7 @@ window.addEventListener('keydown', (e) => {
         e.preventDefault();
         if (player.shootCooldown <= 0) {
             shootPlayer();
-            player.shootCooldown = player.rapidFire ? 5 : 20;
+            player.shootCooldown = player.rapidFire ? 5 : 30;
         }
     }
 });
@@ -219,7 +219,7 @@ function updateBullets() {
         // Kiểm tra va chạm với người chơi
         if (bullet.x > player.x && bullet.x < player.x + player.width &&
             bullet.y > player.y && bullet.y < player.y + player.height) {
-            player.hp -= 10;
+            player.hp -= (enemy.damage || 10);
             enemyBullets.splice(i, 1);
         }
         // Xóa đạn ngoài màn hình
@@ -359,6 +359,7 @@ function initGame() {
     enemy.maxHp = diff.enemyHp;
     enemy.hp = diff.enemyHp;
     enemy.shootCooldownMax = diff.enemyShootRate;
+    enemy.damage = diff.enemyDamage;
 
     // Player Buff (Máu trâu hơn)
     player.maxHp = 300;
@@ -536,7 +537,7 @@ function applySkill(type) {
         setTimeout(() => player.speed -= 3, 5000);
         showStatus('⚡ Tăng tốc độ!');
     } else if (type === 'RAPID_FIRE') {
-        const originalCD = 20;
+        const originalCD = 30;
         player.shootCooldown = 5; // Initial burst
         // We need a way to override cooldown logic temporarily
         // For simplicity, let's just cheat and say we reduce cooldown logic in updatePlayer loop?
@@ -722,7 +723,7 @@ function setupMobileEvents() {
             player.angle = Math.atan2(dy, dx);
             if (player.shootCooldown <= 0) {
                  shootPlayer();
-                 player.shootCooldown = player.rapidFire ? 5 : 20;
+                 player.shootCooldown = player.rapidFire ? 5 : 30;
             }
         }
     };
