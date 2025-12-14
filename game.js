@@ -219,7 +219,9 @@ function updateBullets() {
         // Kiểm tra va chạm với người chơi
         if (bullet.x > player.x && bullet.x < player.x + player.width &&
             bullet.y > player.y && bullet.y < player.y + player.height) {
-            player.hp -= (enemy.damage || 10);
+            const dmg = (enemy.damage || 10);
+            player.hp -= dmg;
+            console.log(`[Hit] Player hit! Damage: ${dmg}, HP Left: ${player.hp}`);
             enemyBullets.splice(i, 1);
         }
         // Xóa đạn ngoài màn hình
@@ -360,6 +362,7 @@ function initGame() {
     enemy.hp = diff.enemyHp;
     enemy.shootCooldownMax = diff.enemyShootRate;
     enemy.damage = diff.enemyDamage;
+    console.log(`[InitGame] Difficulty: ${currentDifficulty}, Enemy Damage: ${enemy.damage}`);
 
     // Player Buff (Máu trâu hơn)
     player.maxHp = 300;
